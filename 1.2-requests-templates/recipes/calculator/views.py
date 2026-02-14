@@ -1,3 +1,5 @@
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.shortcuts import render
 
 DATA = {
@@ -28,3 +30,18 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+
+def index_view(request):
+    return render(request, 'calculator/index.html')
+
+def recipies_view(request, dish):
+    if request.GET.get('servings'):
+        servings = int(request.GET.get('servings'))
+        context = {
+            'recipe': {key: value * servings for key, value in DATA[dish].items()}           
+        }
+    else:
+        context = {
+            'recipe': dict(DATA[dish].items())           
+        }
+    return render(request, 'calculator/index.html', context)
